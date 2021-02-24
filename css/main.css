@@ -4,31 +4,8 @@
     border-bottom: 3px solid #2D5072;
 }
 
-.header-bar {
-    position: relative;
-    /* text-align: center; */
-    color: white;
-    height: 300px;
+.carousel-caption {
+    top: 0px;
+    left: 50px;
+    text-align: left;
 }
-
-.header-bar img {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-     user-select: none;
-}
-  
-  /* Top left text */
-  .top-left {
-    position: absolute;
-    top: 16px;
-    left: 32px;
-    white-space: pre-line;
-    font-size: clamp(1rem, -0.875rem + 8.333333vw, 3.5rem); /* Scale font with viewport size */
-  }
-
-  .points {
-      font-size: clamp(0.5rem, -1.0000rem + 6.6667vw, 2.5rem);
-    }
