@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+h1, h2, h3, h4, h5, body {
+    font-family: 'Montserrat', sans-serif;
+}
+
 /* TODO: Make this adaptive compatible */
 .navbar li:hover {
     margin-bottom: -3px;
@@ -8,4 +14,38 @@
     top: 0px;
     left: 50px;
     text-align: left;
+}
+
+.carousel-caption h1 {
+    font-size: clamp(1rem, -0.875rem + 8.333333vw, 3.5rem);
+}
+
+.carousel-caption h5 {
+    font-size: clamp(1rem, -0.1250rem + 5.0000vw, 2.5rem);
+}
+
+.list-group-item {
+    border: 0px;
+}
+
+img {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+    user-select: none;
+}
+
+.block-w {
+    display: flex;
+    justify-content: center;
+}
+.block-w ul {
+    max-width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.container {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
