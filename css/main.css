@@ -4,6 +4,11 @@ h1, h2, h3, h4, h5, body {
     font-family: 'Montserrat', sans-serif;
 }
 
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
 /* TODO: Make this adaptive compatible */
 .navbar li:hover {
     margin-bottom: -3px;
@@ -24,10 +29,6 @@ h1, h2, h3, h4, h5, body {
     font-size: clamp(1rem, -0.1250rem + 5.0000vw, 2.5rem);
 }
 
-.list-group-item {
-    border: 0px;
-}
-
 img {
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -35,17 +36,48 @@ img {
     user-select: none;
 }
 
-.block-w {
-    display: flex;
-    justify-content: center;
-}
-.block-w ul {
-    max-width: 800px;
-    margin-right: auto;
-    margin-left: auto;
+#container-blue {
+    background-color: #184468;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 .container {
     margin-top: 40px;
-    margin-bottom: 40px;
 }
+
+footer {
+    background: #0c2437;
+    color: white;
+    margin-top:100px;
+    margin-bottom: 0px;
+    bottom: 0px;
+  }
+
+  footer a {
+    color: #fff;
+    font-size: 14px;
+    transition-duration: 0.2s;
+  }
+  
+  footer a:hover {
+    color: #ff984e;
+    text-decoration: none;
+  }
+
+  #footer-logo {
+      margin-bottom: 30px;
+  }
+  
+  .copy {
+    font-size: 12px;
+    padding: 10px;
+    border-top: 1px solid #FFFFFF;
+  }
+  
+  .footer-middle {
+    padding-top: 2em;
+    color: white;
+  }
