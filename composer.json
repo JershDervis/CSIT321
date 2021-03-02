@@ -1,0 +1,12 @@
+{
+    "name": "josh/csit321",
+    "description": "UOW Driving School Website",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Joshua L. Davis",
+            "email": "joshdavisuow@gmail.com"
+        }
+    ],
+    "require": {}
+}

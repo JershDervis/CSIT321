@@ -36,12 +36,31 @@ img {
     user-select: none;
 }
 
+#container-white {
+    background-color: white;
+    color: black;
+    padding-top: 2em;
+    padding-bottom: 3.5em;
+}
+
 #container-blue {
     background-color: #184468;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    color: white;
+    padding-top: 2em;
+    padding-bottom: 3.5em;
+}
+
+/* Text must be white to be effectively visible */
+#container-blue h1, #container-blue figcaption {
+    color:white;
+}
+
+#container-blue figcaption {
+    margin-bottom: 10px;
+}
+
+#form-contact {
+    padding: 2em;
 }
 
 .container {
@@ -56,28 +75,28 @@ footer {
     bottom: 0px;
   }
 
-  footer a {
+footer a {
     color: #fff;
     font-size: 14px;
     transition-duration: 0.2s;
-  }
-  
-  footer a:hover {
+}
+
+footer a:hover {
     color: #ff984e;
     text-decoration: none;
-  }
+}
 
-  #footer-logo {
-      margin-bottom: 30px;
-  }
-  
-  .copy {
+#footer-logo {
+    margin-bottom: 30px;
+}
+
+.copy {
     font-size: 12px;
     padding: 10px;
     border-top: 1px solid #FFFFFF;
-  }
-  
-  .footer-middle {
+}
+
+.footer-middle {
     padding-top: 2em;
     color: white;
-  }
+}

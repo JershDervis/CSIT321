@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
+
 ob_start();
 session_start();
 
@@ -17,7 +19,6 @@ $database = "ds";
 $SITE_EMAIL = "dssd@email.com";
 $SITE_ADDR = "Northfields Ave, Wollongong NSW 2522";
 $SITE_PHONE = "+61 456 789 123";
-
 
 try {
 	//create PDO connection
