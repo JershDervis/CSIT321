@@ -1,17 +1,15 @@
 <?php
-include('password.php');
-class User extends Password {
+class User {
 	
     private $_db;
     
     function __construct($db){
-    	parent::__construct();
     	$this->_db = $db;
     }
     
 	private function get_user_hash($email){
 		try {
-			$stmt = $this->_db->prepare('SELECT password, email, id FROM ' . DATABASE . ' .accounts WHERE email = :email AND active="Yes" ');
+			$stmt = $this->_db->prepare('SELECT password, email, id FROM ' . DB_DATABASE . ' .accounts WHERE email = :email AND active="Yes"');
 			$stmt->execute(array('email' => $email));
 			return $stmt->fetch();
 		} catch(PDOException $e) {
@@ -21,7 +19,7 @@ class User extends Password {
 	
 	public function login($email,$password){
 		$row = $this->get_user_hash($email);
-		if($this->password_verify($password,$row['password']) == 1){
+		if(password_verify($password,$row['password']) == 1){
 		    $_SESSION['loggedin'] = true;
 		    $_SESSION['email'] = $row['email'];
 		    $_SESSION['id'] = $row['id'];

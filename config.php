@@ -1,28 +1,26 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-
 ob_start();
 session_start();
 
-//Enables error reporting, remove this when not debugging
 error_reporting(E_ALL); 
 
 date_default_timezone_set('Australia/Sydney');
 
-define('SITE_ROOT', __DIR__);
+define('DIR',			__DIR__);
+define('DB_SERVER',		'127.0.0.1');
+define('DB_USERNAME',	'admin');
+define('DB_PASSWORD',	'abc123');
+define('DB_DATABASE',	'ds');
 
-$servername = "127.0.0.1";
-$username = "admin";
-$password = "abc123";
-$database = "ds";
+define('SITE_EMAIL',	'dssd@email.com');
+define('SITE_ADDR',		'Northfields Ave, Wollongong NSW 2522');
+define('SITE_PHONE',	'+61 456 789 123');
 
-$SITE_EMAIL = "dssd@email.com";
-$SITE_ADDR = "Northfields Ave, Wollongong NSW 2522";
-$SITE_PHONE = "+61 456 789 123";
+define('SITE_AUTO_EMAIL',	'noreply@qlick2learn.com');
 
 try {
 	//create PDO connection
-	$db = new PDO("mysql:host=".$servername.";dbname=".$database, $username, $password);
+	$db = new PDO("mysql:host=".DB_SERVER.";dbname=".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
 	//show error

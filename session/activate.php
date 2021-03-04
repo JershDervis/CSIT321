@@ -10,7 +10,7 @@ $active = trim($_GET['y']);
 if(is_numeric($id) && !empty($active))
 {
 	//update users record set the active column to Yes where the memberID and active value match the ones provided in the array
-	$stmt = $db->prepare("UPDATE " . DATABASE . ".accounts SET active = 'Yes' WHERE id = :id AND active = :active");
+	$stmt = $db->prepare("UPDATE " . DB_DATABASE . ".accounts SET active = 'Yes' WHERE id = :id AND active = :active");
 	$stmt->execute(array(
 		':id' => $id,
 		':active' => $active

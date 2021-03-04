@@ -95,31 +95,32 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row align-items-center">
-        <div class="col-5">
-            <h1>Get in Touch</h1>
-            <p>Leave us a message and one of our team will contact you as soon as possible</p>
-        </div>
-        <div class="col-sm">
-            <form id="form-contact" class="border rounded">
-                <div class="form-group">
-                    <label for="inputName">Name</label>
-                    <input type="text" class="form-control form-control-lg" id="inputName" placeholder="John Doe">
-                </div>
-                <div class="form-group">
-                    <label for="inputEmail">Email</label>
-                    <input type="email" class="form-control form-control-lg" id="inputEmail" placeholder="example@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="inputMessage">Message</label>
-                    <textarea type="text" class="form-control form-control-lg" id="inputMessage" placeholder="Type your message here.."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-            </form>
+<div id="container-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-5">
+                <h1>Get in Touch</h1>
+                <p>Leave us a message and one of our team will contact you as soon as possible</p>
+            </div>
+            <div class="col-sm">
+                <form id="form-contact" class="border rounded">
+                    <div class="form-group">
+                        <label for="inputName">Name</label>
+                        <input type="text" class="form-control form-control-lg" id="inputName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control form-control-lg" id="inputEmail" placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputMessage">Message</label>
+                        <textarea type="text" class="form-control form-control-lg" id="inputMessage" placeholder="Type your message here.."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 
 <?php require_once('includes/footer.php'); ?>

@@ -34,9 +34,9 @@
                         <h4>Have a Question?</h4>
                         <ul class="list-unstyled">
                             <?php
-                            echo '<li><a href="mailto:' . $SITE_EMAIL . '">' . $SITE_EMAIL . '</a></li>';
-                            echo '<li><a target="_blank" href="https://maps.google.com/?q=:' . $SITE_ADDR . '">' . $SITE_ADDR . '</a></li>';
-                            echo '<li><a href="tel:' . str_replace(' ', '', $SITE_PHONE) . '">' . $SITE_PHONE . '</a></li>';
+                            echo '<li><a href="mailto:' . SITE_EMAIL . '">' . SITE_EMAIL . '</a></li>';
+                            echo '<li><a target="_blank" href="https://maps.google.com/?q=:' . SITE_ADDR . '">' . SITE_ADDR . '</a></li>';
+                            echo '<li><a href="tel:' . str_replace(' ', '', SITE_PHONE) . '">' . SITE_PHONE . '</a></li>';
                             ?>
                         </ul>
                         </div>
@@ -57,7 +57,5 @@
         </div>
         <script src="js/jquery-3.5.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
-        <script src="https://unpkg.com/survey-jquery"></script>
-        <script src="js/util.js"></script>
     </body>
 </html>

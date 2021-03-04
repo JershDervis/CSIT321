@@ -4,11 +4,6 @@ h1, h2, h3, h4, h5, body {
     font-family: 'Montserrat', sans-serif;
 }
 
-.page-container {
-    position: relative;
-    min-height: 100vh;
-}
-
 /* TODO: Make this adaptive compatible */
 .navbar li:hover {
     margin-bottom: -3px;
@@ -59,7 +54,7 @@ img {
     margin-bottom: 10px;
 }
 
-#form-contact {
+#form-contact, #form-rego, #form-login {
     padding: 2em;
 }
 
@@ -68,9 +63,9 @@ img {
 }
 
 footer {
+    margin-top:auto; 
     background: #0c2437;
     color: white;
-    margin-top:100px;
     margin-bottom: 0px;
     bottom: 0px;
   }
@@ -99,4 +94,21 @@ footer a:hover {
 .footer-middle {
     padding-top: 2em;
     color: white;
+}
+
+#log-reg {
+    background-image: url(../assets/banners/log-reg.svg);
+    background-size: cover;
+}
+
+#carousel-centre .carousel-caption {
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: initial;
+}
+
+label {
+    color: #184468;
+    font-size:x-large;
 }

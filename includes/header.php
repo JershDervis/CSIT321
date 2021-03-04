@@ -26,7 +26,6 @@ if(empty($currentPage)) { //incase on home page
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/assets/favicon.ico">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/survey-jquery/survey.min.css" type="text/css" rel="stylesheet"/>
     <link href="css/main.css" rel="stylesheet">
 </head>
 
@@ -54,7 +53,7 @@ if(empty($currentPage)) { //incase on home page
                     ?>
                 </ul>
                 <form action="login.php">
-                    <button type="submit" class="btn btn-outline-danger btn-lg">Login</button>
+                    <button type="submit" class="btn btn-outline-primary btn-lg">Login</button>
                 </form>
             </div>
         </nav>
