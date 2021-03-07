@@ -6,7 +6,7 @@ if($user->is_logged_in()) {
     header('Location: index.php'); 
 } 
 
-$stmt = $db->prepare('SELECT resetToken, resetComplete FROM ' . DATABASE . '.accounts WHERE resetToken = :token');
+$stmt = $db->prepare('SELECT resetToken, resetComplete FROM ' . DATABASE . '.users WHERE resetToken = :token');
 $stmt->execute(array(':token' => $_GET['key']));
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 //if no token from db then kill the page
@@ -33,7 +33,7 @@ if(isset($_POST['submit'])) {
 		//hash the password
 		$hashedpassword = $user->password_hash($_POST['password'], PASSWORD_BCRYPT);
 		try {
-			$stmt = $db->prepare("UPDATE " . DATABASE . ".accounts SET password = :hashedpassword, resetComplete = 'Yes'  WHERE resetToken = :token");
+			$stmt = $db->prepare("UPDATE " . DATABASE . ".users SET password = :hashedpassword, resetComplete = 'Yes'  WHERE resetToken = :token");
 			$stmt->execute(array(
 				':hashedpassword' => $hashedpassword,
 				':token' => $row['resetToken']

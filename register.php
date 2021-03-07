@@ -2,7 +2,7 @@
 require_once('includes/header.php');
 
 if($user->is_logged_in()) {
-    header('Location: /dashboard/index.php'); 
+    $user->sendDashboard();
 } 
 
 if(!empty($_POST)) {
@@ -20,7 +20,7 @@ if(!empty($_POST)) {
 	    $error[] = 'Please enter a valid email address';
 	} else {
         //Check if email already in use
-		$stmt = $db->prepare('SELECT email FROM ' . DB_DATABASE . '.accounts WHERE email = :email');
+		$stmt = $db->prepare('SELECT email FROM ' . DB_DATABASE . '.users WHERE email = :email');
 		$stmt->execute(array(':email' => $email));
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		if(!empty($row['email'])){
@@ -33,7 +33,7 @@ if(!empty($_POST)) {
 		$activasion = md5(uniqid(rand(),true));
 		try {
 			//insert into database with a prepared statement
-			$stmt = $db->prepare('INSERT INTO ' . DB_DATABASE . '.accounts (email,fullName,password,active) VALUES (:email, :fullName, :password, :active)');
+			$stmt = $db->prepare('INSERT INTO ' . DB_DATABASE . '.users (email,fullName,password,active) VALUES (:email, :fullName, :password, :active)');
 			$stmt->execute(array(
 				':email' => $email,
                 ':fullName' => $name,
@@ -43,8 +43,8 @@ if(!empty($_POST)) {
 			$id = $db->lastInsertId('id');
 			//send email
 			$subject = "Registration Confirmation";
-			$body = "<p>Thank you for registering at MonitorJ.net</p>
-			<p>To activate your account, please click on this link: <p><a href='".DIR."session/activate.php?x=$id&y=$activasion'>".DIR."activate.php?x=$id&y=$activasion</a></p></p>
+			$body = "<p>Thank you for registering at Drive2Succeed</p>
+			<p>To activate your account, please click on this link: <p><a href='qlick2learn.com/session/activate.php?x=$id&y=$activasion'>".DIR."activate.php?x=$id&y=$activasion</a></p></p>
 			<p>Regards Josh Davis</p>";
 			$mail = new Mail();
 			$mail->setFrom(SITE_EMAIL);
@@ -63,12 +63,12 @@ if(!empty($_POST)) {
 ?>
 
 <div class="wrapper">
-    <div class="row align-items-center">
+    <div class="row no-gutters align-items-center">
         <div class="col-sm">
             <div id="carousel-centre" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="assets/banners/log-reg.svg" class="d-block w-100" alt="...">
+                        <img src="assets/banners/log-reg-banner.jpg" class="d-block w-100" alt="...">
                         <div class="carousel-caption d-block">
                             <h1 class="font-weight-bold">Register</h1>
                             <h5>It's a much better experience</h5>
@@ -81,19 +81,19 @@ if(!empty($_POST)) {
         <div class="col-sm">
             <form id="form-rego" class="border rounded" method="POST" action="<?php echo $_SERVER['PHP_SELF'];?>">
                 <div class="form-group">
-                    <label for="inputName">Name</label>
+                    <label class="form-label" for="inputName">Name</label>
                     <input type="text" class="form-control form-control-lg" name="inputName" placeholder="John Doe">
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail">Email</label>
+                    <label class="form-label" for="inputEmail">Email</label>
                     <input type="email" class="form-control form-control-lg" name="inputEmail" placeholder="example@email.com">
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword">Password</label>
+                    <label class="form-label" for="inputPassword">Password</label>
                     <input type="password" class="form-control form-control-lg" name="inputPassword" placeholder="********">
                 </div>
                 <div class="form-group">
-                    <label for="inputConfirmPassword">Confirm Password</label>
+                    <label class="form-label" for="inputConfirmPassword">Confirm Password</label>
                     <input type="password" class="form-control form-control-lg" name="inputConfirmPassword" placeholder="********">
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg">Register</button>
@@ -105,7 +105,7 @@ if(!empty($_POST)) {
                     echo '<p>' . $curError . '</p>';
                 } 
                 echo '</div>';
-            } else if(isset($_GET)) {
+            } else if(isset($_GET['action'])) {
                 $action = htmlspecialchars($_GET['action']);
                 if($action == 'joined') {
                     echo '<div class="alert alert-success" role="alert">

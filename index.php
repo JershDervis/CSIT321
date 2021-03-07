@@ -3,7 +3,7 @@
 <div class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="assets/banners/home-banner.svg" class="d-block w-100" alt="...">
+            <img src="assets/banners/home-banner.jpg" class="d-block w-100"/>
             <div class="carousel-caption d-block">
                 <h1 class="font-weight-bold">A Unique Driving School</h1>
                 <h5>Offering Simulation Based</h5>
@@ -11,7 +11,17 @@
 
                 <div class="row">
                     <div class="col-md-12">
-
+                        1
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        2
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        3
                     </div>
                 </div>
             </div>
@@ -24,6 +34,11 @@
         <div class="row">
             <div class="col-md-12">
                 <h1 class="text-center" color="black">Vehicle Type</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="text-center" color="black">We offer a wide range of driving theory test preparations</5>
             </div>
         </div>
         <div class="row align-items-center">

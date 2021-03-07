@@ -7,7 +7,7 @@ if(isset($_POST['submit'])){
 	if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
 	    $error[] = 'Please enter a valid email address';
 	} else {
-		$stmt = $db->prepare('SELECT email FROM ' . DATABASE . 'accounts WHERE email = :email');
+		$stmt = $db->prepare('SELECT email FROM ' . DATABASE . 'users WHERE email = :email');
 		$stmt->execute(array(':email' => $_POST['email']));
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		if(empty($row['email'])){
@@ -19,7 +19,7 @@ if(isset($_POST['submit'])){
 		//create the activasion code
 		$token = md5(uniqid(rand(),true));
 		try {
-			$stmt = $db->prepare("UPDATE " . DATABASE . ".accounts SET resetToken = :token, resetComplete='No' WHERE email = :email");
+			$stmt = $db->prepare("UPDATE " . DATABASE . ".users SET resetToken = :token, resetComplete='No' WHERE email = :email");
 			$stmt->execute(array(
 				':email' => $row['email'],
 				':token' => $token
