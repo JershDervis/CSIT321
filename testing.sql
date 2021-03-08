@@ -16,11 +16,11 @@ INSERT INTO user_quiz_answers (id, user_id, question_id, answer)
 VALUES (NULL, :userID , (SELECT quiz_answer.question_id FROM quiz_answer WHERE quiz_answer.id= :answerID ), :answerID);
 
 -- Get next question and answers
-SELECT quiz_question.id AS qid, quiz_question.question, quiz_question.correct_answer, GROUP_CONCAT(quiz_answer.choice) AS choices, GROUP_CONCAT(quiz_answer.id) AS id_choices FROM quiz_question 
-RIGHT JOIN quiz_answer ON quiz_question.id=quiz_answer.question_id
-LEFT JOIN quiz ON quiz_question.quiz_id=quiz.id
-LEFT JOIN user_quiz_answers ON quiz_question.id=user_quiz_answers.question_id
-WHERE quiz.name='motorbike' AND quiz_question.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers)
+SELECT qq.id AS qid, qq.question, qq.correct_answer, GROUP_CONCAT(qa.choice) AS choices, GROUP_CONCAT(qa.id) AS id_choices FROM quiz_question qq 
+RIGHT JOIN quiz_answer qa ON qq.id=qa.question_id
+LEFT JOIN quiz q ON qq.quiz_id=q.id
+LEFT JOIN user_quiz_answers uqa ON qq.id=uqa.question_id
+WHERE q.name='motorbike' AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id=1)
 GROUP BY qid
 LIMIT 0,1;
 
@@ -28,7 +28,7 @@ LIMIT 0,1;
 SELECT COUNT(*) FROM user_quiz_answers uqa
 LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
 LEFT JOIN quiz q ON qq.quiz_id=q.id
-WHERE q.name='motorbike';
+WHERE q.name='motorbike' AND uqa.user_id=1;
 
 
 --TEST DATA

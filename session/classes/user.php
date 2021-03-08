@@ -94,11 +94,14 @@ class User {
 				RIGHT JOIN quiz_answer ON quiz_question.id=quiz_answer.question_id
 				LEFT JOIN quiz ON quiz_question.quiz_id=quiz.id
 				LEFT JOIN user_quiz_answers ON quiz_question.id=user_quiz_answers.question_id
-				WHERE quiz.name = :quizName AND quiz_question.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers)
+				WHERE quiz.name = :quizName AND quiz_question.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
 				GROUP BY qid
 				LIMIT 0,1;'
 			);
-			$stmt->execute(array('quizName' => $quizName));
+			$stmt->execute(array(
+				'quizName'	=>	$quizName,
+				'userID'	=>	$_SESSION['id']
+			));
 			return $stmt->fetch();
 		} catch(PDOException $e) {
 			echo $e->getMessage();
@@ -127,9 +130,30 @@ class User {
 				'SELECT COUNT(*) FROM user_quiz_answers uqa
 				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
 				LEFT JOIN quiz q ON qq.quiz_id=q.id
-				WHERE q.name= :quizName ;'
+				WHERE q.name= :quizName AND uqa.user_id= :userID ;'
 			);
-			$stmt->execute(array('quizName' => $quizName));
+			$stmt->execute(array(
+				'quizName'	=>	$quizName,
+				'userID'	=>	$_SESSION['id']
+			));
+			return $stmt->fetch()[0];
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function getAmntCorrect($quizName) {
+		try {
+			$stmt = $this->_db->prepare(
+				'SELECT COUNT(*) FROM user_quiz_answers uqa
+				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
+				LEFT JOIN quiz q ON qq.quiz_id=q.id
+				WHERE q.name= :quizName AND uqa.user_id= :userID AND uqa.answer=qq.correct_answer;'
+			);
+			$stmt->execute(array(
+				'quizName'	=>	$quizName,
+				'userID'	=>	$_SESSION['id']
+			));
 			return $stmt->fetch()[0];
 		} catch(PDOException $e) {
 			echo $e->getMessage();

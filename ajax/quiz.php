@@ -14,7 +14,7 @@ if(isset($_GET['name'])) {
 
         if(intval($amntAnswered) >= intval($quizSize)) {
             //Quiz complete
-            echo 'QUIZ IS COMPLETE!';
+            echo 'You scored: ' . (intval($user->getAmntCorrect($quizName)) / intval($quizSize) * 100) . '%';
             //GET SCORE
         } else {
             $question = $user->getNextQuestion($quizName);
