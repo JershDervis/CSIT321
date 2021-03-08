@@ -2,7 +2,8 @@
 require_once('includes/header.php'); 
 
 if(!$user->is_logged_in()) {
-    header('login.php');
+    header('Location: login.php');
+    exit;
 }
 
 ?>
@@ -25,10 +26,10 @@ if(!$user->is_logged_in()) {
                         <div class="tab-pane active" id="theory" role="tabpanel">Theory page</div>
                         <div class="tab-pane fade" id="info" role="tabpanel">Info page</div>
                         <div class="tab-pane fade" id="quiz" role="tabpanel">
-                            <div class="container-quiz">
-                            <div id="quiz-content"></div>
-                            <div class="row no-gutters align-items-center justify-content-center">
-                                <div id="quiz-next-btn" class="col"></div>  <!-- Next -->
+                            <div class="container-quiz border rounded">
+                                <div id="quiz-content"></div>
+                                <div class="row no-gutters align-items-center justify-content-center">
+                                    <button id="quiz-next" type="button" class="btn btn-primary">Next</button>
                                 </div>
                             </div>
                         </div>

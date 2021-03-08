@@ -58,7 +58,21 @@ class User {
 		}
 	}
 
-	function getQuizSize($quizName) {
+	public function quizExists($quizName) {
+		try {
+			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM quiz WHERE quiz.name = :quizName');
+			$stmt->execute(array('quizName' => $quizName));
+			return $stmt->fetch()[0] == '0' ? false : true;
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+	
+
+	/**
+	 * Returns the size of a quiz
+	 */
+	public function getQuizSize($quizName) {
 		try {
 			$stmt = $this->_db->prepare('SELECT size FROM quiz WHERE quiz.name = :quizName');
 			$stmt->execute(array('quizName' => $quizName));
@@ -73,7 +87,7 @@ class User {
 	 * Also pulls the options available with this question
 	 * Also pulls the correct answer
 	 */
-	function getNextQuestion($quizName) {
+	public function getNextQuestion($quizName) {
 		try {
 			$stmt = $this->_db->prepare(
 				'SELECT quiz_question.id AS qid, quiz_question.question, quiz_question.correct_answer, GROUP_CONCAT(quiz_answer.choice) AS choices, GROUP_CONCAT(quiz_answer.id) AS id_choices FROM quiz_question 
@@ -91,7 +105,35 @@ class User {
 		}
 	}
 
-	function getQuestionsAnswered($quizName) {
+	public function submitAnswer($answerID) {
+		try {
+			$stmt = $this->_db->prepare(
+				'INSERT INTO user_quiz_answers (id, user_id, question_id, answer) 
+				 VALUES (NULL, :userID , (SELECT quiz_answer.question_id FROM quiz_answer WHERE quiz_answer.id= :answerID ), :answerID );'
+			);
+			$stmt->execute(array(
+				'userID' => $_SESSION['id'],
+				'answerID' => $answerID
+			));
+			return $stmt->fetchAll();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function getAnsweredAmnt($quizName) {
+		try {
+			$stmt = $this->_db->prepare(
+				'SELECT COUNT(*) FROM user_quiz_answers uqa
+				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
+				LEFT JOIN quiz q ON qq.quiz_id=q.id
+				WHERE q.name= :quizName ;'
+			);
+			$stmt->execute(array('quizName' => $quizName));
+			return $stmt->fetch()[0];
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
 	}
 }
 ?>

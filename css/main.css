@@ -107,3 +107,7 @@ footer a:hover {
     color: #184468;
     font-size:x-large;
 }
+
+.container-quiz {
+    padding: 2em;
+}
