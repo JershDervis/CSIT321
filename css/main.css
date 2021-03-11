@@ -10,17 +10,17 @@ h1, h2, h3, h4, h5, body {
     border-bottom: 3px solid #2D5072;
 }
 
-.carousel-caption {
+#index-carousel-caption {
     top: 0px;
     left: 50px;
     text-align: left;
 }
 
-.carousel-caption h1 {
+#index-carousel-caption h1 {
     font-size: clamp(1rem, -0.875rem + 8.333333vw, 3.5rem);
 }
 
-.carousel-caption h5 {
+#index-carousel-caption h5 {
     font-size: clamp(1rem, -0.1250rem + 5.0000vw, 2.5rem);
 }
 
@@ -96,7 +96,7 @@ footer a:hover {
     color: white;
 }
 
-#carousel-centre .carousel-caption {
+#carousel-centre #index-carousel-caption {
     left: auto;
     top: 50%;
     transform: translateY(-50%);
@@ -108,6 +108,6 @@ footer a:hover {
     font-size:x-large;
 }
 
-.container-quiz {
+.container-theory, .container-info, .container-quiz {
     padding: 2em;
 }

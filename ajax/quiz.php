@@ -18,16 +18,19 @@ if(isset($_GET['name'])) {
             //GET SCORE
         } else {
             $question = $user->getNextQuestion($quizName);
-        
+            $answers = $user->getQuestionOptions($question['qid']);
+            $choices = array();
+            $idChoices = array();
+
+            foreach($answers as $option) {
+                array_push($choices, $option['choice']);
+                array_push($idChoices, $option['id']);
+            }
             $nextQuestion = $question['question'];
-            $correctAnswer = $question['correct_answer'];
-            $choices = explode(',', $question['choices'] ); //TODO: FIX: answers must not contain comma currently
-            $idChoices = explode(',', $question['id_choices'] );
-        
+                    
             echo '  <div class="row no-gutters align-items-center justify-content-center">
                     <div class="col">RTA - QUIZ</div>
                     <div class="col">
-                        <div id="ajaxLoading"></div>
                     </div>
                     <div id="quiz-position" class="col text-right">
                         Question: ' . strval((intval($amntAnswered) + 1)) . '/' . $quizSize . '
@@ -40,7 +43,7 @@ if(isset($_GET['name'])) {
                     <div class="row no-gutters align-items-center justify-content-center">
                     <div id="quiz-answer" class="col">';
         
-            for($i = 0; $i < count($choices); ++$i) {
+            for($i = 0; $i < sizeof($choices); ++$i) {
                 echo '<div class="form-check">
                         <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios' . $idChoices[$i] . '" value="' . $idChoices[$i] . '">
                         <label class="form-check-label" for="gridRadios' . $idChoices[$i] . '">';

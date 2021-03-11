@@ -9,7 +9,7 @@ class User {
     
 	private function get_user_hash($email){
 		try {
-			$stmt = $this->_db->prepare('SELECT password, email, id FROM ' . DB_DATABASE . ' .users WHERE email = :email AND active="Yes"');
+			$stmt = $this->_db->prepare('SELECT password, email, id, admin FROM ' . DB_DATABASE . ' .users WHERE email = :email AND active="Yes"');
 			$stmt->execute(array('email' => $email));
 			return $stmt->fetch();
 		} catch(PDOException $e) {
@@ -19,11 +19,13 @@ class User {
 	
 	public function login($email,$password){
 		$row = $this->get_user_hash($email);
-		if(password_verify($password,$row['password']) == 1){
-		    $_SESSION['loggedin'] = true;
-		    $_SESSION['email'] = $row['email'];
-		    $_SESSION['id'] = $row['id'];
-		    return true;
+		if($row) {
+			if(password_verify($password,$row['password']) == 1){
+				$_SESSION['loggedin'] = true;
+				$_SESSION['email'] = $row['email'];
+				$_SESSION['id'] = $row['id'];
+				return true;
+			}
 		}
 	}
 	
@@ -60,7 +62,7 @@ class User {
 
 	public function quizExists($quizName) {
 		try {
-			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM quiz WHERE quiz.name = :quizName');
+			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM quiz WHERE quiz.name = :quizName ;');
 			$stmt->execute(array('quizName' => $quizName));
 			return $stmt->fetch()[0] == '0' ? false : true;
 		} catch(PDOException $e) {
@@ -74,7 +76,7 @@ class User {
 	 */
 	public function getQuizSize($quizName) {
 		try {
-			$stmt = $this->_db->prepare('SELECT size FROM quiz WHERE quiz.name = :quizName');
+			$stmt = $this->_db->prepare('SELECT size FROM quiz WHERE quiz.name = :quizName ;');
 			$stmt->execute(array('quizName' => $quizName));
 			return $stmt->fetch()[0];
 		} catch(PDOException $e) {
@@ -90,11 +92,9 @@ class User {
 	public function getNextQuestion($quizName) {
 		try {
 			$stmt = $this->_db->prepare(
-				'SELECT quiz_question.id AS qid, quiz_question.question, quiz_question.correct_answer, GROUP_CONCAT(quiz_answer.choice) AS choices, GROUP_CONCAT(quiz_answer.id) AS id_choices FROM quiz_question 
-				RIGHT JOIN quiz_answer ON quiz_question.id=quiz_answer.question_id
-				LEFT JOIN quiz ON quiz_question.quiz_id=quiz.id
-				LEFT JOIN user_quiz_answers ON quiz_question.id=user_quiz_answers.question_id
-				WHERE quiz.name = :quizName AND quiz_question.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
+				'SELECT qq.id AS qid, qq.question, qq.correct_answer FROM quiz_question qq 
+				LEFT JOIN quiz q ON qq.quiz_id=q.id
+				WHERE q.name= :quizName AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
 				GROUP BY qid
 				LIMIT 0,1;'
 			);
@@ -103,6 +103,20 @@ class User {
 				'userID'	=>	$_SESSION['id']
 			));
 			return $stmt->fetch();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function getQuestionOptions($questionID) {
+		try {
+			$stmt = $this->_db->prepare(
+				'SELECT qa.id, qa.choice FROM quiz_answer qa WHERE qa.question_id= :questionID ;'
+			);
+			$stmt->execute(array(
+				'questionID'	=>	$questionID,
+			));
+			return $stmt->fetchAll();
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}

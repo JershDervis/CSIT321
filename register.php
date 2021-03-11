@@ -41,19 +41,29 @@ if(!empty($_POST)) {
 				':active' => $activasion
 			));
 			$id = $db->lastInsertId('id');
-			//send email
-			$subject = "Registration Confirmation";
-			$body = "<p>Thank you for registering at Drive2Succeed</p>
-			<p>To activate your account, please click on this link: <p><a href='qlick2learn.com/session/activate.php?x=$id&y=$activasion'>".DIR."activate.php?x=$id&y=$activasion</a></p></p>
-			<p>Regards Josh Davis</p>";
-			$mail = new Mail();
-			$mail->setFrom(SITE_EMAIL);
-			$mail->addAddress($email);
-			$mail->subject($subject);
-			$mail->body($body);
-			$mail->send();
-			header('Location: register.php?action=joined');
-			exit;
+
+            $headers  = 'MIME-Version: 1.0' . "\r\n";
+            $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+            $headers .= 'From: '.SITE_AUTO_EMAIL."\r\n".
+                'Reply-To: '.SITE_AUTO_EMAIL."\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+            if(mail(
+                $email, 
+                'Registration Confirmation',
+                "<html><body><p>Thank you for registering at Drive2Succeed</p>
+                <p>To activate your account, please click on this link: <p><a href='qlick2learn.com/session/activate.php?x=$id&y=$activasion'>qlick2learn.com/session/activate/activate.php?x=$id&y=$activasion</a></p></p>
+                <p>Regards Josh Davis</p></body></html>",
+                $headers
+            )) {
+                //Success
+            } else {
+                $error[] = 'Failed to email: '  . $email;
+            }
+
+            if(!isset($error)) {
+                header('Location: register.php?action=joined');
+                exit;
+            }
 		} catch(PDOException $e) {
 		    $error[] = $e->getMessage();
 		}
@@ -69,7 +79,7 @@ if(!empty($_POST)) {
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <img src="assets/banners/log-reg-banner.jpg" class="d-block w-100" alt="...">
-                        <div class="carousel-caption d-block">
+                        <div id="index-carousel-caption" class="carousel-caption d-block">
                             <h1 class="font-weight-bold">Register</h1>
                             <h5>It's a much better experience</h5>
                             <h5>when you have an account</h5>

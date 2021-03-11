@@ -1,28 +1,25 @@
+-- SELECT qq.id AS qid, qq.question, qq.correct_answer, GROUP_CONCAT(qa.choice) AS choices, GROUP_CONCAT(qa.id) AS id_choices FROM quiz_question qq 
+-- RIGHT JOIN quiz_answer qa ON qq.id=qa.question_id
+-- LEFT JOIN quiz q ON qq.quiz_id=q.id
+-- LEFT JOIN user_quiz_answers uqa ON qq.id=uqa.question_id
+-- WHERE q.name='motorbike' AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id=1)
+-- GROUP BY qid
+-- LIMIT 0,1;
 
--- GET NEXT QUESTION QUERY:
-SELECT 
-	quiz_question.question,
-    quiz_question.correct_answer
-FROM quiz_question 
-LEFT JOIN quiz ON quiz_question.quiz_id=quiz.id
-LEFT JOIN user_quiz_answers ON quiz_question.id=user_quiz_answers.question_id
-WHERE 
-	quiz.name='motorbike'
-    AND quiz_question.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers)
+
+-- Get next question
+SELECT qq.id AS qid, qq.question, qq.correct_answer FROM quiz_question qq 
+LEFT JOIN quiz q ON qq.quiz_id=q.id
+WHERE q.name= :quizName AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
+GROUP BY qid
 LIMIT 0,1;
+
+--Get question options
+SELECT qa.id, qa.choice FROM quiz_answer qa WHERE qa.question_id= :questionID;
 
 -- Insert user answer for quiz
 INSERT INTO user_quiz_answers (id, user_id, question_id, answer) 
 VALUES (NULL, :userID , (SELECT quiz_answer.question_id FROM quiz_answer WHERE quiz_answer.id= :answerID ), :answerID);
-
--- Get next question and answers
-SELECT qq.id AS qid, qq.question, qq.correct_answer, GROUP_CONCAT(qa.choice) AS choices, GROUP_CONCAT(qa.id) AS id_choices FROM quiz_question qq 
-RIGHT JOIN quiz_answer qa ON qq.id=qa.question_id
-LEFT JOIN quiz q ON qq.quiz_id=q.id
-LEFT JOIN user_quiz_answers uqa ON qq.id=uqa.question_id
-WHERE q.name='motorbike' AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id=1)
-GROUP BY qid
-LIMIT 0,1;
 
 -- Get the users position in a quiz (returns how many questions have been answered for the quiz)
 SELECT COUNT(*) FROM user_quiz_answers uqa
@@ -54,7 +51,7 @@ INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,2,'30 km/h
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,2,'40 km/h');
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,2,'60 km/h');
 
-INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,3,'Yes, but only when going over 30 km/h');
+INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,3,'Yes.. but only when going over 30 km/h');
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,3,'No');
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,3,'Yes');
 
@@ -67,8 +64,8 @@ INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,5,'Right')
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,5,'Both directions');
 
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,6,'No');
-INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,6,'Yes, provided the provisional driver has held a P2 licence for more than 6 months');
-INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,6,'Yes, provided L and P1 or P2 plates are displayed');
+INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,6,'Yes.. provided the provisional driver has held a P2 licence for more than 6 months');
+INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,6,'Yes.. provided L and P1 or P2 plates are displayed');
 
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,7,'Anywhere on your side of the road');
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,7,'Near to the left-hand side of the road');
@@ -78,9 +75,9 @@ INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,8,'Take ca
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,8,'Unbuckle your seat belt so you can reverse as quickly as possible');
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,8,'Sound your horn to warn other drivers');
 
-INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,9,'Yes, provided no taxis are using the area');
-INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,9,'Yes, if you are carrying two or more passengers');
-INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,9,'No, not at any time');
+INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,9,'Yes.. provided no taxis are using the area');
+INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,9,'Yes.. if you are carrying two or more passengers');
+INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,9,'No.. not at any time');
 
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,10,'Keep your sunglasses on to cut down headlight glare');
 INSERT INTO `quiz_answer`(`id`, `question_id`, `choice`) VALUES (NULL,10,'Turn on your lights on low beam');

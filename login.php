@@ -29,7 +29,7 @@ if(isset($_POST['inputEmail']) && isset($_POST['inputPassword'])) {
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <img src="assets/banners/log-reg-banner.jpg" class="d-block w-100">
-                        <div class="carousel-caption d-block">
+                        <div id="index-carousel-caption" class="carousel-caption d-block">
                             <h1 class="font-weight-bold">Login</h1>
                             <h5>Pick up stuff from where</h5>
                             <h5>you left off</h5>

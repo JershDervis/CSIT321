@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS quiz_question (
     correct_answer      INT(10)         NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (quiz_id)   REFERENCES  quiz(id),
-    FOREIGN KEY (Answer)    REFERENCES  quiz_answer(id)
+    FOREIGN KEY (correct_answer)    REFERENCES  quiz_answer(id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- /**

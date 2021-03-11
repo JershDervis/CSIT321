@@ -19,6 +19,9 @@ define('SITE_PHONE',	'+61 456 789 123');
 define('SITE_NAME', 'Drive2Succeed');
 define('SITE_URL', $_SERVER['HTTP_HOST']);
 define('SITE_AUTO_EMAIL',	'noreply@qlick2learn.com');
+define('SITE_AUTO_EMAIL_PASS',	'howzat35');
+
+define('API_GOOGLE_KEY', 'AIzaSyD8iDifKf8snpIOYUZ7MHvu07VePGZHJNU');
 
 try {
 	//create PDO connection
@@ -32,7 +35,6 @@ try {
 
 //include the user class, pass in the database connection
 include('session/classes/user.php');
-include('session/classes/phpmailer/mail.php');
 $user = new User($db);
 
 ?>
