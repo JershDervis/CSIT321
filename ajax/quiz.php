@@ -6,18 +6,18 @@ if(!$user->is_logged_in()) {
     exit;
 }
 
-if(isset($_GET['name'])) {
-    $quizName = htmlspecialchars($_GET['name']);
-    if($user->quizExists($quizName)) {
-        $quizSize = $user->getQuizSize($quizName);
-        $amntAnswered = $user->getAnsweredAmnt($quizName);
+if(isset($_GET['id'])) {
+    $quizID = htmlspecialchars($_GET['id']);
+    if($user->quizExists($quizID)) {
+        $quizSize = $user->getQuizSize($quizID);
+        $amntAnswered = $user->getAnsweredAmnt($quizID);
 
+        //Check if quiz complete..
         if(intval($amntAnswered) >= intval($quizSize)) {
-            //Quiz complete
-            echo 'You scored: ' . (intval($user->getAmntCorrect($quizName)) / intval($quizSize) * 100) . '%';
-            //GET SCORE
-        } else {
-            $question = $user->getNextQuestion($quizName);
+            echo 'You scored: ' . (intval($user->getAmntCorrect($quizID)) / intval($quizSize) * 100) . '%';
+            echo '<div class="col text-left"><button id="quiz-back" type="button" class="btn btn-primary">Exit</button></div>';
+        } else { //If not complete display next quesiton..
+            $question = $user->getNextQuestion($quizID);
             $answers = $user->getQuestionOptions($question['qid']);
             $choices = array();
             $idChoices = array();
@@ -29,7 +29,7 @@ if(isset($_GET['name'])) {
             $nextQuestion = $question['question'];
                     
             echo '  <div class="row no-gutters align-items-center justify-content-center">
-                    <div class="col">RTA - QUIZ</div>
+                    <div id="db-quiz" class="col">Quiz-' . $quizID . '</div>
                     <div class="col">
                     </div>
                     <div id="quiz-position" class="col text-right">
@@ -50,7 +50,13 @@ if(isset($_GET['name'])) {
                 echo $choices[$i];
                 echo '</label></div>';
             }
-            echo '</div></div>';
+            echo '</div></div>
+
+            <div id="quiz-nav" class="row no-gutters">
+                <div class="col text-left"><button id="quiz-back" type="button" class="btn btn-primary">Exit</button></div>
+                <div class="col text-right"><button id="quiz-next" type="button" class="btn btn-primary">Next</button></div>
+            </div>
+            ';
         }
     } else {
         echo 'Invalid quiz selected. Quiz does not exist in database.';

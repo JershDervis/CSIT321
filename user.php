@@ -7,53 +7,28 @@ if(!$user->is_logged_in()) {
 }
 ?>
 
+<style>
+#user-form {
+    width: 25em;
+}
+</style>
+
 <div id="container-white">
     <div class="d-flex justify-content-center">
-        <div class="wrapper">
-            <div class="row no-gutters align-items-center justify-content-center">
-                <div class="col">
-                    <div class="list-group list-group-horizontal-xl" id="quiz-list" role="tablist">
-                        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#theory" role="tab">Theory</a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#info" role="tab">Information</a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#quiz" role="tab">Quizzes</a>
-                    </div>
+        <form id="user-form">
+            <div class="form-group row">
+                <label for="staticName" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control" id="staticName" value="<?php echo $_SESSION['name'] ?>">
+                </div>
+                <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control" id="staticEmail" value="<?php echo $_SESSION['email'] ?>">
                 </div>
             </div>
-            <div class="row no-gutters align-items-center justify-content-center">
-                <div class="col">
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="theory" role="tabpanel">
-                            <div class="container-theory border rounded">
-                                Theory page
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="info" role="tabpanel">
-                            <div class="container-info border rounded">
-                                Info page
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="quiz" role="tabpanel">
-                            <div id="container-quiz" class="container-quiz border rounded">
-                                <div id="quiz-content"></div>
-                                <div class="row no-gutters align-items-center justify-content-center">
-                                    <button id="quiz-next" type="button" class="btn btn-primary">Next</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
-
-<script>
-  $(function () {
-    $('#quiz-list a:last-child').tab('show')
-  })
-</script>
-
-<script src="js/quiz.js"></script>
 
 
 <?php 

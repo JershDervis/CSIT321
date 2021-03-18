@@ -1,6 +1,6 @@
 $(function( $ ){
 
-    var selectedQuiz = 'motorbike';
+    var selectedQuiz = 'General Theory Test';
 
     //Show the first question
     nextQuestion(selectedQuiz);
@@ -8,7 +8,7 @@ $(function( $ ){
 
 
     $("button").click(function(e) {
-        // e.preventDefault();
+        e.preventDefault();
         //Gets the selected answer
         var checkedRadio = $('input[type=radio][name=gridRadios]:checked').attr('id');
         if(checkedRadio != null) {
@@ -21,7 +21,7 @@ $(function( $ ){
                 data: 'answer=' + answerID,
                 beforeSend: function(){
                     document.getElementById("quiz-content").innerHTML = 
-                    document.getElementById("quiz-content").innerHTML + '<img id="ajaxLoading" src="assets/animations/loading.gif">';
+                    document.getElementById("quiz-content").innerHTML + '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
                 },
                 success: function(result) {
                     nextQuestion(selectedQuiz);

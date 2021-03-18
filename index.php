@@ -131,11 +131,15 @@
                         <label for="inputMessage">Message</label>
                         <textarea type="text" class="form-control form-control-lg" id="inputMessage" placeholder="Type your message here.."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                    <div id="contact-load">
+                        <button type="submit" id="contact-submit" class="btn btn-primary btn-lg">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script src="js/contact.js"></script>
 
 <?php require_once('includes/footer.php'); ?>

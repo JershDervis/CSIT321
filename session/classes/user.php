@@ -9,7 +9,7 @@ class User {
     
 	private function get_user_hash($email){
 		try {
-			$stmt = $this->_db->prepare('SELECT password, email, id, admin FROM ' . DB_DATABASE . ' .users WHERE email = :email AND active="Yes"');
+			$stmt = $this->_db->prepare('SELECT password, email, id, admin, fullName FROM ' . DB_DATABASE . ' .users WHERE email = :email AND active="Yes"');
 			$stmt->execute(array('email' => $email));
 			return $stmt->fetch();
 		} catch(PDOException $e) {
@@ -23,6 +23,7 @@ class User {
 			if(password_verify($password,$row['password']) == 1){
 				$_SESSION['loggedin'] = true;
 				$_SESSION['email'] = $row['email'];
+				$_SESSION['name'] = $row['fullName'];
 				$_SESSION['id'] = $row['id'];
 				return true;
 			}
@@ -41,7 +42,7 @@ class User {
 	}
 
 	public function sendDashboard() {
-		header('Location: user.php'); 
+		header('Location: lessons.php'); 
 	}
 
 	public function sessionValidate() {
@@ -60,11 +61,58 @@ class User {
 		}
 	}
 
-	public function quizExists($quizName) {
+	public function unitExists($unitName) {
 		try {
-			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM quiz WHERE quiz.name = :quizName ;');
-			$stmt->execute(array('quizName' => $quizName));
+			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM unit WHERE unit.name = :unitName ;');
+			$stmt->execute(array('unitName' => $unitName));
 			return $stmt->fetch()[0] == '0' ? false : true;
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function getUnitID($unitName) {
+		try {
+			$stmt = $this->_db->prepare('SELECT u.id FROM unit u WHERE u.name= :unitName ;');
+			$stmt->execute(array('unitName' => $unitName));
+			return intval($stmt->fetch()[0]);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function getUnitQuizes($unitID) {
+		try {
+			$stmt = $this->_db->prepare('SELECT q.id, q.name, q.size FROM quiz q WHERE q.unit_id= :unitID ;');
+			$stmt->execute(array('unitID'	=>	$unitID));
+			return $stmt->fetchAll();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function quizExists($quizID) {
+		try {
+			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM quiz WHERE quiz.id = :quizID ;');
+			$stmt->execute(array('quizID' => $quizID));
+			return $stmt->fetch()[0] == '0' ? false : true;
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function getUserQuizScore($quizID) {
+		try {
+			$stmt = $this->_db->prepare(
+				"SELECT round(((COUNT(uqa.id) / q.size) * 100 ),0) as score FROM user_quiz_answers uqa 
+				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id 
+				LEFT JOIN quiz q ON qq.quiz_id=q.id 
+				WHERE q.id= :quizID AND uqa.user_id= :userID AND qq.correct_answer=uqa.answer");
+				$stmt->execute(array(
+					'quizID'	=>	$quizID,
+					'userID'	=>	$_SESSION['id']
+				));
+				return $stmt->fetch()[0];
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
@@ -74,10 +122,10 @@ class User {
 	/**
 	 * Returns the size of a quiz
 	 */
-	public function getQuizSize($quizName) {
+	public function getQuizSize($quizID) {
 		try {
-			$stmt = $this->_db->prepare('SELECT size FROM quiz WHERE quiz.name = :quizName ;');
-			$stmt->execute(array('quizName' => $quizName));
+			$stmt = $this->_db->prepare('SELECT size FROM quiz WHERE quiz.id = :quizID ;');
+			$stmt->execute(array('quizID' => $quizID));
 			return $stmt->fetch()[0];
 		} catch(PDOException $e) {
 			echo $e->getMessage();
@@ -89,20 +137,37 @@ class User {
 	 * Also pulls the options available with this question
 	 * Also pulls the correct answer
 	 */
-	public function getNextQuestion($quizName) {
+	public function getNextQuestion($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
 				'SELECT qq.id AS qid, qq.question, qq.correct_answer FROM quiz_question qq 
 				LEFT JOIN quiz q ON qq.quiz_id=q.id
-				WHERE q.name= :quizName AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
+				WHERE q.id= :quizID AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
 				GROUP BY qid
 				LIMIT 0,1;'
 			);
 			$stmt->execute(array(
-				'quizName'	=>	$quizName,
+				'quizID'	=>	$quizID,
 				'userID'	=>	$_SESSION['id']
 			));
 			return $stmt->fetch();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function isQuizComplete($quizID) {
+		try {
+			$stmt = $this->_db->prepare(
+				'SELECT IF(COUNT(*) >= (SELECT q.size FROM quiz q WHERE q.id= :quizID ), "TRUE", "FALSE") FROM user_quiz_answers uqa 
+				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
+				WHERE qq.quiz_id= :quizID AND uqa.user_id= :userID ;'
+			);
+			$stmt->execute(array(
+				'quizID'	=>	$quizID,
+				'userID'	=>	$_SESSION['id']
+			));
+			return ($stmt->fetch()[0] == "TRUE") ? true : false;
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
@@ -138,16 +203,16 @@ class User {
 		}
 	}
 
-	public function getAnsweredAmnt($quizName) {
+	public function getAnsweredAmnt($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
 				'SELECT COUNT(*) FROM user_quiz_answers uqa
 				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
 				LEFT JOIN quiz q ON qq.quiz_id=q.id
-				WHERE q.name= :quizName AND uqa.user_id= :userID ;'
+				WHERE q.id= :quizID AND uqa.user_id= :userID ;'
 			);
 			$stmt->execute(array(
-				'quizName'	=>	$quizName,
+				'quizID'	=>	$quizID,
 				'userID'	=>	$_SESSION['id']
 			));
 			return $stmt->fetch()[0];
@@ -156,16 +221,16 @@ class User {
 		}
 	}
 
-	public function getAmntCorrect($quizName) {
+	public function getAmntCorrect($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
 				'SELECT COUNT(*) FROM user_quiz_answers uqa
 				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
 				LEFT JOIN quiz q ON qq.quiz_id=q.id
-				WHERE q.name= :quizName AND uqa.user_id= :userID AND uqa.answer=qq.correct_answer;'
+				WHERE q.id= :quizID AND uqa.user_id= :userID AND uqa.answer=qq.correct_answer;'
 			);
 			$stmt->execute(array(
-				'quizName'	=>	$quizName,
+				'quizID'	=>	$quizID,
 				'userID'	=>	$_SESSION['id']
 			));
 			return $stmt->fetch()[0];

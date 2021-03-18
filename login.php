@@ -68,14 +68,22 @@ if(isset($_POST['inputEmail']) && isset($_POST['inputPassword'])) {
                 echo '</div>';
             } else if(isset($_GET['action'])) {
                 $action = htmlspecialchars($_GET['action']);
-                if($action == 'active') {
-                    echo '<div class="alert alert-success" role="alert">
-                    Your account has been activated successfully. Please login to continue.
-                    </div>';
-                } else if($action == 'expired') {
-                    echo '<div class="alert alert-warning" role="alert">
-                    Your session has expired. Please login to continue.
-                    </div>';
+                switch($action) {
+                    case 'active':
+                        echo '<div class="alert alert-success" role="alert">
+                        Your account has been activated successfully. Please login to continue.
+                        </div>';
+                        break;
+                    case 'expired':
+                        echo '<div class="alert alert-warning" role="alert">
+                        Your session has expired. Please login to continue.
+                        </div>';
+                        break;
+                    case 'reset':
+                        echo '<div class="alert alert-success" role="alert">
+                        Your password has been reset, please login to continue.
+                        </div>';
+                        break;
                 }
             }
             ?>

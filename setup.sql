@@ -25,11 +25,19 @@ CREATE TABLE IF NOT EXISTS users (
     PRIMARY KEY(id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS quiz (
+CREATE TABLE IF NOT EXISTS unit (
     id      INT(10)         AUTO_INCREMENT,
     name    VARCHAR(100)    NOT NULL,
-    size    INT(10)         DEFAULT (10),
     PRIMARY KEY(id)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS quiz (
+    id      INT(10)         AUTO_INCREMENT,
+    unit_id INT(10)         NOT NULL,
+    name    VARCHAR(100)    NOT NULL,
+    size    INT(10)         DEFAULT (10),
+    PRIMARY KEY(id),
+    FOREIGN KEY (unit_id)   REFERENCES unit(id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- /**

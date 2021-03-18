@@ -27,6 +27,12 @@ LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
 LEFT JOIN quiz q ON qq.quiz_id=q.id
 WHERE q.name='motorbike' AND uqa.user_id=1;
 
+--Get user quiz score:
+SELECT concat(round(((COUNT(uqa.id) / q.size) * 100 ),0), '%') as score FROM user_quiz_answers uqa
+LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
+LEFT JOIN quiz q ON qq.quiz_id=q.id
+WHERE q.id=1 AND uqa.user_id=1 AND qq.correct_answer=uqa.answer;
+
 
 --TEST DATA
 INSERT INTO `quiz`(`id`, `name`, `size`) VALUES (NULL,'motorbike',10);

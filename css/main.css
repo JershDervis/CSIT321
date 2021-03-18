@@ -4,11 +4,15 @@ h1, h2, h3, h4, h5, body {
     font-family: 'Montserrat', sans-serif;
 }
 
-/* TODO: Make this adaptive compatible */
-.navbar li:hover {
-    margin-bottom: -3px;
-    border-bottom: 3px solid #2D5072;
+#prof-drop {
+    list-style-type: none;
 }
+.dropdown-toggle::after {
+    transition: transform 0.15s linear; 
+ }
+ .show.dropdown .dropdown-toggle::after {
+   transform: translateY(3px);
+ }
 
 #index-carousel-caption {
     top: 0px;
@@ -110,4 +114,8 @@ footer a:hover {
 
 .container-theory, .container-info, .container-quiz {
     padding: 2em;
+}
+
+.unit-link:hover {
+    background-color: #2D5072;
 }
