@@ -57,6 +57,13 @@ if(isset($_POST['inputEmail']) && isset($_POST['inputPassword'])) {
                         </div>
                     </div>
                 </div>
+                <div class="row no-gutters align-items-center">
+                    <div class="col">
+                        <div class="d-flex justify-content-center">
+                            <a href="reset.php">Forgot your password? Click here to reset.</a>
+                        </div>
+                    </div>
+                </div>
             </form>
 
             <?php

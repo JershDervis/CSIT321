@@ -1,7 +1,5 @@
 <?php require_once('includes/header.php'); ?>
 
-<?php require_once('includes/header.php'); ?>
-
 <div id="container-white">
     <div class="container">
 
@@ -45,8 +43,5 @@
         </div>
     </div>
 </div>
-
-<?php require_once('includes/footer.php'); ?>
-
 
 <?php require_once('includes/footer.php'); ?>
