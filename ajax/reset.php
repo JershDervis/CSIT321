@@ -25,7 +25,7 @@ if(isset($_POST['email']) && !empty($_POST['email'])) {
             $subject = SITE_NAME . " - Password Reset Request";
             $body = "<p>Someone requested that the password be reset.</p>
             <p>If this was a mistake, just ignore this email and nothing will happen.</p>
-            <p>To reset your password, visit the following address: <a href='".DIR."/session/resetpass.php?key=$token'>".DIR."resetPassword.php?key=$token</a></p>";
+            <p>To reset your password, visit the following address: <a href='".SITE_URL."/reset.php?key=$token'>".SITE_URL."/reset.php?key=$token</a></p>";
             $headers  = 'MIME-Version: 1.0' . "\r\n";
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
             $headers .= 'From: '.SITE_AUTO_EMAIL."\r\n".
