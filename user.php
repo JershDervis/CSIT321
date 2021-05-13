@@ -13,7 +13,7 @@ if(!$user->is_logged_in()) {
 }
 </style>
 
-<div id="container-white">
+<div class="container">
     <div class="d-flex justify-content-center">
         <form id="user-form">
             <div class="form-group row">

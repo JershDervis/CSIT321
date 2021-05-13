@@ -1,7 +1,7 @@
 function autoHeight() {
-    var h = $(document).height() - $('body').height();
+    var h = $j(document).height() - $j('body').height();
     if (h > 0) {
-        $('#footer').css({
+        $j('#footer').css({
             marginTop: h
         });
     }

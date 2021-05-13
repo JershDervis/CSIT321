@@ -6,8 +6,12 @@ if(!$user->is_logged_in()) {
     exit;
 }
 
-if(isset($_POST['answer'])) {
-    $user->submitAnswer($_POST['answer']);
+$submitted = json_decode($_POST['answers']);
+
+if(isset($submitted)) {
+    foreach ($submitted as $ans)
+        $user->submitAnswer($ans);
 }
 
+echo json_encode($submitted);
 ?>

@@ -61,6 +61,30 @@ class User {
 		}
 	}
 
+	public function isAdmin() {
+		if($this->is_logged_in()) {
+			try {
+				$stmt = $this->_db->prepare('SELECT admin FROM users WHERE users.id = :sessID ;');
+				$stmt->execute(array('sessID' => $_SESSION['id']));
+				return $stmt->fetch()[0] == '0' ? false : true;
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		} else {
+			return false;
+		}
+	}
+
+	public function getUnits() {
+		try {
+			$stmt = $this->_db->prepare('SELECT * FROM unit;');
+			$stmt->execute();
+			return $stmt->fetchAll();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
 	public function unitExists($unitName) {
 		try {
 			$stmt = $this->_db->prepare('SELECT COUNT(1) FROM unit WHERE unit.name = :unitName ;');
@@ -83,7 +107,7 @@ class User {
 
 	public function getUnitQuizes($unitID) {
 		try {
-			$stmt = $this->_db->prepare('SELECT q.id, q.name, q.size FROM quiz q WHERE q.unit_id= :unitID ;');
+			$stmt = $this->_db->prepare('SELECT * FROM quiz q WHERE q.unit_id= :unitID ;');
 			$stmt->execute(array('unitID'	=>	$unitID));
 			return $stmt->fetchAll();
 		} catch(PDOException $e) {
@@ -104,10 +128,17 @@ class User {
 	public function getUserQuizScore($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
-				"SELECT round(((COUNT(uqa.id) / q.size) * 100 ),0) as score FROM user_quiz_answers uqa 
-				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id 
-				LEFT JOIN quiz q ON qq.quiz_id=q.id 
-				WHERE q.id= :quizID AND uqa.user_id= :userID AND qq.correct_answer=uqa.answer");
+				"SELECT round(((COUNT(DISTINCT(uqa.question_id)) / (SELECT COUNT(qq.id) FROM quiz_question qq WHERE qq.quiz_id= :quizID )) * 100 ),0) as score
+				FROM user_quiz_answers uqa
+				join quiz_question qq
+				on uqa.question_id=qq.id    
+				WHERE uqa.question_id NOT IN (          
+				(SELECT a.question_id FROM (SELECT qa.question_id ,qa.id FROM quiz_answer qa WHERE qa.is_correct = 1) a
+				LEFT JOIN (SELECT uqa.question_id ,uqa.answer FROM user_quiz_answers uqa ) b ON a.question_id = b.question_id AND a.id = b.answer WHERE b.answer IS NULL)       
+				UNION      
+				(SELECT a.question_id FROM (SELECT qa.question_id ,qa.id FROM quiz_answer qa WHERE qa.is_correct = 0)  a JOIN 
+				(SELECT uqa.question_id ,uqa.answer FROM user_quiz_answers uqa) b
+				ON a.question_id = b.question_id AND a.id = b.answer)) and quiz_id= :quizID and user_id= :userID;");
 				$stmt->execute(array(
 					'quizID'	=>	$quizID,
 					'userID'	=>	$_SESSION['id']
@@ -124,7 +155,7 @@ class User {
 	 */
 	public function getQuizSize($quizID) {
 		try {
-			$stmt = $this->_db->prepare('SELECT size FROM quiz WHERE quiz.id = :quizID ;');
+			$stmt = $this->_db->prepare('SELECT COUNT(qq.id) "total" FROM quiz_question qq WHERE qq.quiz_id= :quizID ;');
 			$stmt->execute(array('quizID' => $quizID));
 			return $stmt->fetch()[0];
 		} catch(PDOException $e) {
@@ -140,7 +171,7 @@ class User {
 	public function getNextQuestion($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
-				'SELECT qq.id AS qid, qq.question, qq.correct_answer FROM quiz_question qq 
+				'SELECT qq.id AS qid, qq.question, qq.question_img FROM quiz_question qq 
 				LEFT JOIN quiz q ON qq.quiz_id=q.id
 				WHERE q.id= :quizID AND qq.id NOT IN (SELECT user_quiz_answers.question_id FROM user_quiz_answers WHERE user_quiz_answers.user_id= :userID )
 				GROUP BY qid
@@ -159,7 +190,7 @@ class User {
 	public function isQuizComplete($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
-				'SELECT IF(COUNT(*) >= (SELECT q.size FROM quiz q WHERE q.id= :quizID ), "TRUE", "FALSE") FROM user_quiz_answers uqa 
+				'SELECT IF(COUNT(*) >= (SELECT COUNT(qq.id) FROM quiz_question qq WHERE qq.quiz_id= :quizID ), "TRUE", "FALSE") FROM user_quiz_answers uqa 
 				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
 				WHERE qq.quiz_id= :quizID AND uqa.user_id= :userID ;'
 			);
@@ -206,10 +237,9 @@ class User {
 	public function getAnsweredAmnt($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
-				'SELECT COUNT(*) FROM user_quiz_answers uqa
+				'SELECT COUNT(DISTINCT(uqa.question_id)) FROM user_quiz_answers uqa
 				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
-				LEFT JOIN quiz q ON qq.quiz_id=q.id
-				WHERE q.id= :quizID AND uqa.user_id= :userID ;'
+				WHERE uqa.user_id= :userID AND qq.quiz_id= :quizID;'
 			);
 			$stmt->execute(array(
 				'quizID'	=>	$quizID,
@@ -224,10 +254,17 @@ class User {
 	public function getAmntCorrect($quizID) {
 		try {
 			$stmt = $this->_db->prepare(
-				'SELECT COUNT(*) FROM user_quiz_answers uqa
-				LEFT JOIN quiz_question qq ON uqa.question_id=qq.id
-				LEFT JOIN quiz q ON qq.quiz_id=q.id
-				WHERE q.id= :quizID AND uqa.user_id= :userID AND uqa.answer=qq.correct_answer;'
+				'SELECT COUNT(DISTINCT (uqa.question_id))
+				FROM user_quiz_answers uqa
+				join quiz_question qq
+				on uqa.question_id=qq.id    
+				WHERE uqa.question_id NOT IN (          
+				(SELECT a.question_id FROM (SELECT qa.question_id ,qa.id FROM quiz_answer qa WHERE qa.is_correct = 1) a
+				LEFT JOIN (SELECT uqa.question_id ,uqa.answer FROM user_quiz_answers uqa ) b ON a.question_id = b.question_id AND a.id = b.answer WHERE b.answer IS NULL)       
+				UNION      
+				(SELECT a.question_id FROM (SELECT qa.question_id ,qa.id FROM quiz_answer qa WHERE qa.is_correct = 0)  a JOIN 
+				(SELECT uqa.question_id ,uqa.answer FROM user_quiz_answers uqa) b
+				ON a.question_id = b.question_id AND a.id = b.answer)) and quiz_id= :quizID and user_id= :userID;'
 			);
 			$stmt->execute(array(
 				'quizID'	=>	$quizID,

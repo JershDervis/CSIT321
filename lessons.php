@@ -1,4 +1,8 @@
-<?php require_once('includes/header.php'); ?>
+<?php 
+require_once('includes/header.php');
+
+$units = $user->getUnits();
+?>
 
 <div id="container-white">
     <div class="container">
@@ -13,38 +17,35 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-sm">
-                <a href="unit.php?name=motorbike">
+            <?php
+            foreach($units as $u) {
+                try { //TODO: rather then query multiple times, create 1 query for all
+                    $stmt = $db->prepare('SELECT f.file_name, f.loc_name FROM files f LEFT JOIN unit u ON u.unit_img=f.id WHERE u.id= :unitID ;');
+                    $stmt->execute(array(
+                        'unitID'  =>  $u['id']
+                    ));
+                    $unitImg = $stmt->fetch(PDO::FETCH_ASSOC);
+                } catch(PDOException $e) {
+                    echo $e->getMessage();
+                }
+                if(empty($unitImg) || $unitImg == null) {
+                    $unitImg['file_name'] = 'Temporary Filler';
+                    $unitImg['loc_name'] = '../assets/icons/filler.svg';
+                }
+                if($u['published'] == 1) {
+                    echo '
+                    <div class="col-sm">
+                    <a href="unit.php?name=' . $u['name'] . '">
                     <figure class="figure unit-link">
-                        <img src="assets/icons/bike.svg" class="figure-img img-fluid rounded" alt="motorbike" unselectable="on">
-                        <figcaption class="figure-caption text-center font-weight-bold">Bike</figcaption>
+                    <img src="uploads/' . $unitImg['loc_name'] . '" class="figure-img img-fluid rounded" alt="' . $unitImg['file_name'] . '" unselectable="on" width="207" height="241">
+                    <figcaption class="figure-caption text-center font-weight-bold">' . ucfirst($u['name']) . '</figcaption>
                     </figure>
-                </a>
-            </div>
-            <div class="col-sm">
-                <figure class="figure">
-                    <img src="assets/icons/car.svg" class="figure-img img-fluid rounded" alt="car" unselectable="on">
-                    <figcaption class="figure-caption text-center font-weight-bold">Car</figcaption>
-                </figure>
-            </div>
-            <div class="col-sm">
-                <figure class="figure">
-                    <img src="assets/icons/bus.svg" class="figure-img img-fluid rounded" alt="bus" unselectable="on">
-                    <figcaption class="figure-caption text-center font-weight-bold">Bus</figcaption>
-                </figure>
-            </div>
-            <div class="col-sm">
-                <figure class="figure">
-                    <img src="assets/icons/truck.svg" class="figure-img img-fluid rounded" alt="truck" unselectable="on">
-                    <figcaption class="figure-caption text-center font-weight-bold">Truck</figcaption>
-                </figure>
-            </div>
-            <div class="col-sm">
-                <figure class="figure">
-                    <img src="assets/icons/fork.svg" class="figure-img img-fluid rounded" alt="fork-lift" unselectable="on">
-                    <figcaption class="figure-caption text-center font-weight-bold">Fork-lift</figcaption>
-                </figure>
-            </div>
+                    </a>
+                    </div>
+                    ';
+                }
+            }
+            ?>
         </div>
     </div>
 </div>

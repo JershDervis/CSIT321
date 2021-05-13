@@ -72,8 +72,13 @@ if($user->is_logged_in()) {
                         <img src="assets/icons/avatar.svg"/> ' . $_SESSION['name'] . '
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">
-                        <a class="dropdown-item" href="user.php">My Profile</a>
-                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="user.php">My Profile</a>';
+                        
+                        if($user->isAdmin()) {
+                            echo '<a class="dropdown-item" href="builder.php">Content Builder</a>';
+                        }
+
+                        echo '<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" onclick="logout()">Logout</a>
                         </div>
                     </li></span>';

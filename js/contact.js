@@ -2,9 +2,9 @@ $j(function( $ ){
     $j("#contact-submit").click(function(e) {
         e.preventDefault();
         
-        var name = $('#inputName').val();
-        var email = $('#inputEmail').val();
-        var message = $('#inputMessage').val();
+        var name = $j('#inputName').val();
+        var email = $j('#inputEmail').val();
+        var message = $j('#inputMessage').val();
 
         if(name.length > 0 && email.length > 0 && message.length > 0) {
             $j.ajax({

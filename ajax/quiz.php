@@ -19,6 +19,31 @@ if(isset($_GET['id'])) {
         } else { //If not complete display next quesiton..
             $question = $user->getNextQuestion($quizID);
             $answers = $user->getQuestionOptions($question['qid']);
+
+            if(isset($question['question_img'])) {
+                try {
+                    $stmt = $db->prepare('SELECT f.loc_name FROM files f WHERE f.id= :imageID ;');
+                    $stmt->execute(array(
+                        'imageID'  =>  $question['question_img']
+                    ));
+                    $fileLocation = $stmt->fetch(PDO::FETCH_ASSOC)['loc_name'];
+                } catch(PDOException $e) {
+                    echo $e->getMessage();
+                }
+            }
+
+            //Check if should be radio or checkbox question:
+            //SELECT * FROM quiz_answer qa WHERE qa.is_correct=1 AND qa.question_id = 1;
+            try {
+                $stmt = $db->prepare('SELECT COUNT(*) "total" FROM quiz_answer qa WHERE qa.is_correct=1 AND qa.question_id = :questionID ;');
+                $stmt->execute(array(
+                    'questionID'  =>  $question['qid']
+                ));
+                $isCheckbox = intval($stmt->fetch(PDO::FETCH_ASSOC)['total']) > 1 ? true : false;
+            } catch(PDOException $e) {
+                echo $e->getMessage();
+            }
+
             $choices = array();
             $idChoices = array();
 
@@ -27,34 +52,47 @@ if(isset($_GET['id'])) {
                 array_push($idChoices, $option['id']);
             }
             $nextQuestion = $question['question'];
-                    
-            echo '  <div class="row no-gutters align-items-center justify-content-center">
-                    <div id="db-quiz" class="col">Quiz-' . $quizID . '</div>
-                    <div class="col">
-                    </div>
-                    <div id="quiz-position" class="col text-right">
-                        Question: ' . strval((intval($amntAnswered) + 1)) . '/' . $quizSize . '
-                    </div>
-                    </div>
 
-                    <div class="row no-gutters align-items-center justify-content-center">
-                    <div id="quiz-question" class="col">' . $nextQuestion . '</div> <!-- Question -->
-                    </div>
-                    <div class="row no-gutters align-items-center justify-content-center">
-                    <div id="quiz-answer" class="col">';
-        
-            for($i = 0; $i < sizeof($choices); ++$i) {
-                echo '<div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios' . $idChoices[$i] . '" value="' . $idChoices[$i] . '">
-                        <label class="form-check-label" for="gridRadios' . $idChoices[$i] . '">';
-                echo $choices[$i];
-                echo '</label></div>';
+            echo '  <div class="row no-gutters align-items-center justify-content-center mb-3">
+            <div id="db-quiz" class="col">Quiz</div>
+            <div class="col">
+            </div>
+            <div id="quiz-position" class="col text-right">
+                Question: ' . strval((intval($amntAnswered) + 1)) . '/' . $quizSize . '
+            </div>
+            </div>
+
+            <div class="row no-gutters align-items-center justify-content-center mb-3">
+            <div id="quiz-question" class="col"><b>' . $nextQuestion . '</b></div> <!-- Question -->
+            </div>
+            <div class="row no-gutters align-items-center justify-content-center mb-3">';
+            if(isset($fileLocation)) {
+                echo '<img width="200px" height="200px" src="uploads/' . $fileLocation . '"></img>';
             }
-            echo '</div></div>
+            echo '</div>
+            <div class="row no-gutters align-items-center justify-content-center">
+            <div id="quiz-answer" class="col">';
 
-            <div id="quiz-nav" class="row no-gutters">
+            for($i = 0; $i < sizeof($choices); ++$i) {
+                if($isCheckbox) {
+                    echo '<div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectableAnswer" id="gridSelectable' . $idChoices[$i] . '" value="' . $idChoices[$i] . '">
+                    <label class="form-check-label" for="gridSelectable' . $idChoices[$i] . '">';
+                    echo $choices[$i];
+                    echo '</label></div>';
+                } else {
+                    echo '<div class="form-check">
+                            <input class="form-check-input" type="radio" name="selectableAnswer" id="gridSelectable' . $idChoices[$i] . '" value="' . $idChoices[$i] . '">
+                            <label class="form-check-label" for="gridSelectable' . $idChoices[$i] . '">';
+                    echo $choices[$i];
+                    echo '</label></div>';
+                }
+            }
+
+            echo '</div></div>
+            <div id="quiz-nav" class="row no-gutters mt-3">
                 <div class="col text-left"><button id="quiz-back" type="button" class="btn btn-primary">Exit</button></div>
-                <div class="col text-right"><button id="quiz-next" type="button" class="btn btn-primary">Next</button></div>
+                <div class="col text-right"><button id="quiz-next" type="button" class="btn btn-primary" data-quiz-id="' . $quizID . '">Next</button></div>
             </div>
             ';
         }

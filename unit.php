@@ -19,21 +19,17 @@ if(!$user->unitExists($unit)) {
     exit;
 }
 
+try {
+    $stmt = $db->prepare('SELECT t.title, t.link FROM theory t WHERE t.unit_id= :unitID ;');
+    $stmt->execute(array(
+        'unitID'  =>  $unitID
+    ));
+    $theoryLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch(PDOException $e) {
+    echo $e->getMessage();
+}
+
 ?>
-
-<!-- TEMPORARY -->
-<!-- <div class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="assets/banners/motorbike.jpg" height="400px" class="d-block w-100"/>
-            <div id="index-carousel-caption" class="carousel-caption d-block">
-                <h1 class="font-weight-bold">Motorbike</h1>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
 <div id="container-white">
     <div class="d-flex justify-content-center">
         <div class="wrapper">
@@ -56,7 +52,14 @@ if(!$user->unitExists($unit)) {
                     <div class="tab-content">
                         <div class="tab-pane active" id="theory" role="tabpanel">
                             <div class="container-theory border rounded">
-                                Theory page
+                                Theory
+                                <?php
+                                if(isset($theoryLinks)) {
+                                    foreach($theoryLinks as $link) {
+                                        echo '<p><a href="' . $link['link'] . '" target="_blank">' . $link['title'] . '</a></p>';
+                                    }
+                                }
+                                ?>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="info" role="tabpanel">
@@ -77,7 +80,7 @@ if(!$user->unitExists($unit)) {
 
 <script>
 $j(document).ready(function () {
-    $('#quiz-list a:last-child').tab('show');
+    $j('#quiz-list a:last-child').tab('show');
 
     var unitID = <?php echo $unitID; ?>;
 
@@ -89,21 +92,25 @@ $j(document).ready(function () {
     });
 
     $j(document).on("click", "#quiz-next", function() {
-        var checkedRadio = $('input[type=radio][name=gridRadios]:checked').attr('id');
-        if(checkedRadio != null) {
-            var answerID = checkedRadio.split('gridRadios')[1];
+        var qid = $j(this).data('quiz-id');
+        var answerIDS = [];
+        $j('input[name=selectableAnswer]:checked').each(function() {
+            answerIDS.push(this.value);
+        });
+        if(answerIDS != null) {
             $j.ajax({
                 type: "POST",
                 url: "/ajax/answer.php",
                 dataType: 'text',
-                data: 'answer=' + answerID,
+                data: {
+                    answers: JSON.stringify(answerIDS)
+                },
                 beforeSend: function(){
-                    document.getElementById("quiz-nav").innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+                    $j('#quiz-nav').html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
                 },
                 success: function(result) {
-                    document.getElementById("quiz-nav").innerHTML = '<button id="quiz-next" type="button" class="btn btn-primary">Next</button>';
-                    var quizID = document.getElementById("db-quiz").innerHTML.split("Quiz-")[1];
-                    nextQuestion(quizID);
+                    $j('#quiz-nav').html('<button id="quiz-next" type="button" class="btn btn-primary" data-quiz-id="' + qid + '">Next</button>');
+                    nextQuestion(qid);
                 },
                 error: function(result) {
                     alert('Invalid Response');

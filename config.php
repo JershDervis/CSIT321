@@ -24,6 +24,9 @@ define('SITE_AUTO_EMAIL_PASS',	'howzat35');
 
 define('API_GOOGLE_KEY', 'AIzaSyD8iDifKf8snpIOYUZ7MHvu07VePGZHJNU');
 
+define('SITE_ROOT', realpath(dirname(__FILE__)));
+define('FILES',			SITE_ROOT . '/uploads/');
+
 try {
 	//create PDO connection
 	$db = new PDO("mysql:host=".DB_SERVER.";dbname=".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
