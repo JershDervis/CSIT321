@@ -8,9 +8,9 @@ date_default_timezone_set('Australia/Sydney');
 
 define('DIR',			$_SERVER['DOCUMENT_ROOT']);
 define('DB_SERVER',		'127.0.0.1'); //CHANGE THIS to 'localhost' when live on web
-define('DB_USERNAME',	DB_SERVER == '127.0.0.1' ? 'admin' : 'qlicvibc_admin');
-define('DB_PASSWORD',	DB_SERVER == '127.0.0.1' ? 'abc123' : 'howzat35');
-define('DB_DATABASE',	DB_SERVER == '127.0.0.1' ? 'ds' : 'qlicvibc_ds');
+define('DB_USERNAME',	DB_SERVER == '127.0.0.1' ? 'admin' : '');
+define('DB_PASSWORD',	DB_SERVER == '127.0.0.1' ? 'abc123' : '');
+define('DB_DATABASE',	DB_SERVER == '127.0.0.1' ? 'ds' : '');
 
 define('SITE_EMAIL',	'dssd@email.com');
 define('SITE_ADDR',		'Northfields Ave, Wollongong NSW 2522');
@@ -20,9 +20,9 @@ define('SITE_NAME', 'Drive2Succeed');
 define('SITE_URL', $_SERVER['HTTP_HOST']);
 define('SITE_AUTO_EMAIL',	'noreply@qlick2learn.com');
 define('SITE_CONTACT_EMAIL',	'noreply@qlick2learn.com');
-define('SITE_AUTO_EMAIL_PASS',	'howzat35');
+define('SITE_AUTO_EMAIL_PASS',	'');
 
-define('API_GOOGLE_KEY', 'AIzaSyD8iDifKf8snpIOYUZ7MHvu07VePGZHJNU');
+define('API_GOOGLE_KEY', '');
 
 define('SITE_ROOT', realpath(dirname(__FILE__)));
 define('FILES',			SITE_ROOT . '/uploads/');
